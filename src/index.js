@@ -23,8 +23,19 @@ function createCard(pokemonDataObject) {
 
     const cardImage = document.createElement('img')
     cardImage.classList.add('card--img')
-    cardImage.setAttribute('src', pokemonDataObject.sprites.other["official-artwork"].front_default)
 
+    const officialArtwork = pokemonDataObject.sprites.other["official-artwork"].front_default
+    const dreamWorld = pokemonDataObject.sprites.other.dream_world.front_default
+
+    cardImage.setAttribute('src', officialArtwork)
+
+    cardImage.addEventListener('click', () => {
+        if (cardImage.getAttribute('src') === officialArtwork) {
+            cardImage.setAttribute('src', dreamWorld);
+        } else {
+            cardImage.setAttribute('src', officialArtwork)
+        }
+    })
 
     const cardStatList = document.createElement('ul')
     for(const stat of pokemonDataObject.stats) {
@@ -33,9 +44,34 @@ function createCard(pokemonDataObject) {
         statListItem.textContent =  stat.stat.name.toUpperCase() + ": " + stat.base_stat
         cardStatList.appendChild(statListItem)
     }
+
+    const separator = document.createElement('hr');
+    separator.classList.add('card-separator');
+
+    const gameTitle = document.createElement('h3')
+    gameTitle.textContent = 'Games:'
+    gameTitle.style.cursor = 'pointer'
+
+    const cardGameList = document.createElement('ul')
+    cardGameList.style.display = 'none'
+
+    for (const game of pokemonDataObject.game_indices) {
+        const gameListItem = document.createElement('li')
+        gameListItem.classList.add('card--text', 'no-list-style')
+        gameListItem.textContent = game.version.name.toUpperCase()
+        cardGameList.appendChild(gameListItem)
+    }
+
+    gameTitle.addEventListener('click', () => {
+        cardGameList.style.display = cardGameList.style.display === 'none' ? 'block' : 'none'
+    })
+
     newCard.appendChild(cardHeading)
     newCard.appendChild(cardImage)
     newCard.appendChild(cardStatList)
+    newCard.appendChild(separator)
+    newCard.appendChild(gameTitle)
+    newCard.appendChild(cardGameList)
 
     pokemonListUL.appendChild(newCard)
 }
